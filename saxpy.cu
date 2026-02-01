@@ -41,7 +41,7 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, 
     int totalBytes = sizeof(float) * 3 * N;
 
     // compute number of blocks and threads per block
-    const int threadsPerBlock = 512;
+    const int threadsPerBlock = 128; //Default 512
     const int blocks = (N + threadsPerBlock - 1) / threadsPerBlock;
 
     float* device_x;
@@ -114,7 +114,7 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, 
     // The time elapsed between startTime and endTime is the total
     // time to copy data to the GPU, run the kernel, and copy the
     // result back to the CPU
-    cudaDeviceSynchronize();
+    //cudaDeviceSynchronize();
     double endTime = CycleTimer::currentSeconds();
     
 
