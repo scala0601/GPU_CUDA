@@ -20,8 +20,23 @@ saxpy_kernel(int N, float alpha, float* x, float* y, float* result) {
     else return;
 }
 
+void saxpyCpu(int N, float alpha, float* x, float* y, float* result) {
+    for (int i = 0; i < N; i++) {
+        result[i] = alpha * x[i] + y[i];
+    }
+}
+
+
 void
 saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray) {
+
+    double start = CycleTimer::currentSeconds();
+    saxpyCpu(N, alpha, x, y, result_cpu);
+    double end = CycleTimer::currentSeconds();
+
+    double cpuTime = end - start;
+    printf("CPU time: %.3f ms\t\t[%.3f GB/s]\n",
+        1000.f * cpuTime, toBW(sizeof(float)*3*N, cpuTime));
 
     int totalBytes = sizeof(float) * 3 * N;
 
@@ -69,7 +84,7 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray) 
     // ensure the kernel running on the GPU has completed.  (Otherwise
     // you will incorrectly observe that almost no time elapses!)
     //
-    cudaDeviceSynchronize();
+    cudaThreadSynchronize();
 
     double endKernel = CycleTimer::currentSeconds();
 
@@ -124,3 +139,4 @@ printCudaInfo() {
     }
     printf("---------------------------------------------------------\n");
 }
+
