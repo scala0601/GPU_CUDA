@@ -51,6 +51,7 @@ int main(int argc, char** argv)
     const float alpha = 2.0f;
     float* xarray = new float[N];
     float* yarray = new float[N];
+    float* result_cpu = new float[N];
     float* resultarray = new float[N];
 
     // load X, Y, store result
