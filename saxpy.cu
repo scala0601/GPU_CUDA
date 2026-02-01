@@ -28,7 +28,7 @@ void saxpyCpu(int N, float alpha, float* x, float* y, float* result) {
 
 
 void
-saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray) {
+saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, float* result_cpu) {
 
     double start = CycleTimer::currentSeconds();
     saxpyCpu(N, alpha, xarray, yarray, result_cpu);
