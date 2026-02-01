@@ -3,7 +3,7 @@
 #include <getopt.h>
 #include <string>
 
-void saxpyCuda(int N, float alpha, float* x, float* y, float* result);
+void saxpyCuda(int N, float alpha, float* x, float* y, float* result, float* result_cpu);
 void printCudaInfo();
 
 
