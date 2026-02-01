@@ -41,7 +41,7 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, 
     int totalBytes = sizeof(float) * 3 * N;
 
     // compute number of blocks and threads per block
-    const int threadsPerBlock = 256; //Default 512
+    const int threadsPerBlock = 1024; //Default 512
     const int blocks = (N + threadsPerBlock - 1) / threadsPerBlock;
 
     float* device_x;
