@@ -55,9 +55,9 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, 
     // these buffers are used in the call to saxpy_kernel below
     // without being initialized.
     //
-    cudaMalloc(&device_x, sizeof(float)*N); cudaMemset(device_x, 0, memSize);
-    cudaMalloc(&device_y, sizeof(float)*N); cudaMemset(device_y, 0, memSize);
-    cudaMalloc(&device_result, sizeof(float)*N); cudaMemset(device_result, 0, memSize);
+    cudaMalloc(&device_x, sizeof(float)*N);
+    cudaMalloc(&device_y, sizeof(float)*N); 
+    cudaMalloc(&device_result, sizeof(float)*N);
 
     // start timing after allocation of device memory.
     double startTime = CycleTimer::currentSeconds();
