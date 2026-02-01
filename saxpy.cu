@@ -17,7 +17,7 @@ saxpy_kernel(int N, float alpha, float* x, float* y, float* result) {
 
     if (index < N)
        result[index] = alpha * x[index] + y[index];
-    else return
+    else return;
 }
 
 void
@@ -61,7 +61,7 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray) 
 
     // run saxpy_kernel on the GPU
     saxpy_kernel<<<blocks, threadsPerBlock>>>(N, alpha, device_x, device_y, device_result);
-
+    
     //
     // TODO: insert timer here to time only the kernel.  Since the
     // kernel will run asynchronously with the calling CPU thread, you
@@ -69,7 +69,8 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray) 
     // ensure the kernel running on the GPU has completed.  (Otherwise
     // you will incorrectly observe that almost no time elapses!)
     //
-    cudaThreadSynchronize();
+    cudaDeviceSynchronize();
+
     double endKernel = CycleTimer::currentSeconds();
 
 
