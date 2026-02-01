@@ -72,11 +72,19 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, 
     //
     // TODO: insert time here to begin timing only the kernel
     //
-    double startKernel = CycleTimer::currentSeconds();
+    cudaEvent_t kernelStart, kernelStop;
+    cudaEventCreate(&kernelStart);
+    cudaEventCreate(&kernelStop);
+
+    cudaEventRecord(kernelStart);
 
     // run saxpy_kernel on the GPU
     saxpy_kernel<<<blocks, threadsPerBlock>>>(N, alpha, device_x, device_y, device_result);
-    
+    cudaError_t err = cudaGetLastError();
+    if (err != cudaSuccess) {
+        printf("Kernel launch error: %s\n", cudaGetErrorString(err));
+    }
+
     //
     // TODO: insert timer here to time only the kernel.  Since the
     // kernel will run asynchronously with the calling CPU thread, you
@@ -84,9 +92,17 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, 
     // ensure the kernel running on the GPU has completed.  (Otherwise
     // you will incorrectly observe that almost no time elapses!)
     //
-    cudaThreadSynchronize();
+    cudaEventRecord(kernelStop);
+    cudaEventSynchronize(kernelStop);
 
-    double endKernel = CycleTimer::currentSeconds();
+    float kernelMs = 0.f;
+    cudaEventElapsedTime(&kernelMs, kernelStart, kernelStop);
+
+    printf("GPU kernel time: %.3f ms\n", kernelMs);
+
+    // cleanup
+    cudaEventDestroy(kernelStart);
+    cudaEventDestroy(kernelStop);
 
 
     //
@@ -98,8 +114,9 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, 
     // The time elapsed between startTime and endTime is the total
     // time to copy data to the GPU, run the kernel, and copy the
     // result back to the CPU
-    double endTime = CycleTimer::currentSeconds();
     cudaDeviceSynchronize();
+    double endTime = CycleTimer::currentSeconds();
+    
 
     cudaError_t errCode = cudaPeekAtLastError();
     if (errCode != cudaSuccess) {
