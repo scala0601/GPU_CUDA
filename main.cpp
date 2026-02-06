@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     // end parsing of commandline options //////////////////////////////////////
 
     const float alpha = 2.0f;
-    float* xarray, yarray, resultarray, result_cpu;
+    float *xarray, *yarray, *resultarray, *result_cpu;
 
     cudaMallocHost(&xarray, N*sizeof(float));
     cudaMallocHost(&yarray, N*sizeof(float));
