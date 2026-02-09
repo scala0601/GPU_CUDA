@@ -20,6 +20,30 @@ saxpy_kernel(int N, float alpha, float* x, float* y, float* result) {
     else return;
 }
 
+__global__ void
+saxpy_kernel_tiled(int N, float alpha, float* x, float* y, float* result) {
+
+    //now compute using tiling!!
+
+    __shared__ float tile_x[512];
+    __shared__ float tile_y[512];
+
+    int globalIdx = blockIdx.x * blockDim.x + threadIdx.x;
+    int localIdx = threadIdx.x;
+
+    if (globalIdx < N) {
+        tile_x[localIdx] = x[globalIdx];
+        tile_y[localIdx] = y[globalIdx];
+    }
+    __syncthreads();
+
+    if (globalIdx < N) {
+        result[globalIdx] = alpha * tile_x[localIdx] + tile_y[localIdx];
+    }
+
+    // in saxpy, tiling may not help much since each element is only used once...
+}
+
 void saxpyCpu(int N, float alpha, float* x, float* y, float* result) {
     for (int i = 0; i < N; i++) {
         result[i] = alpha * x[i] + y[i];
@@ -79,7 +103,7 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, 
     cudaEventRecord(kernelStart);
 
     // run saxpy_kernel on the GPU
-    saxpy_kernel<<<blocks, threadsPerBlock>>>(N, alpha, device_x, device_y, device_result);
+    saxpy_kernel_tile<<<blocks, threadsPerBlock>>>(N, alpha, device_x, device_y, device_result);
     cudaError_t err = cudaGetLastError();
     if (err != cudaSuccess) {
         printf("Kernel launch error: %s\n", cudaGetErrorString(err));
