@@ -103,7 +103,7 @@ saxpyCuda(int N, float alpha, float* xarray, float* yarray, float* resultarray, 
     cudaEventRecord(kernelStart);
 
     // run saxpy_kernel on the GPU
-    saxpy_kernel_tile<<<blocks, threadsPerBlock>>>(N, alpha, device_x, device_y, device_result);
+    saxpy_kernel_tiled<<<blocks, threadsPerBlock>>>(N, alpha, device_x, device_y, device_result);
     cudaError_t err = cudaGetLastError();
     if (err != cudaSuccess) {
         printf("Kernel launch error: %s\n", cudaGetErrorString(err));
